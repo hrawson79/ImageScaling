@@ -1,1 +1,1 @@
-Directory for storing verification files
+Directory for storing verification files.
