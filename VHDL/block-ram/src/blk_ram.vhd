@@ -1,3 +1,7 @@
+--Engineer     : Navdeep Dahiya
+--Date         : 11/15/2018
+--Name of file : block_ram.vhd
+--Description  : module RAM as block ram (need to change sizes as desired)
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -17,7 +21,6 @@ architecture arch of blk_ram is
 
 type ram_t is array(0 to 255) of std_logic_vector(7 downto 0);
 signal ram : ram_t := (others => (others => '0'));
-signal addr_reg : integer := 0;
 
 begin
 
@@ -28,11 +31,10 @@ begin
         ram(address) <= data_i;
     end if;
     if (rst = '1') then
-      addr_reg <= 0;
+      data_o <= "00000000";
     else
-      addr_reg <= address;
+      data_o <= ram(address);
     end if;
   end if;
 end process;
-data_o <= ram(addr_reg);
 end arch;
