@@ -55,7 +55,8 @@ ARCHITECTURE vga_test OF vga_test IS
            -- input side
            clk      : in  std_logic;
            rst      : in  std_logic;
-           address     : in integer;
+           wr_address     : in integer;
+           rd_address   : in integer;
            we : in std_logic; -- Write enable
            data_i : in std_logic_vector(7 downto 0);
            data_o : out std_logic_vector(7 downto 0)
@@ -89,7 +90,8 @@ ARCHITECTURE vga_test OF vga_test IS
     
     SIGNAL pixel_clk : STD_LOGIC;
     SIGNAL nblanck, nsync : STD_LOGIC;
-    SIGNAL address : INTEGER RANGE 0 TO 307199;
+    SIGNAL rd_address : INTEGER RANGE 0 TO 307199;
+    SIGNAL wr_address : INTEGER RANGE 0 TO 307199;
     SIGNAL pixel_in : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL fifo_rd : STD_LOGIC;
     -- TEST ARRAY
@@ -137,14 +139,14 @@ BEGIN
     led(0) <= ram_we;
     --addr <= STD_LOGIC_VECTOR(TO_UNSIGNED(address, 18));
     
-    u1 : COMPONENT vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), 200, 300, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, address);
+    u1 : COMPONENT vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), 200, 300, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, rd_address);
     --u2 : COMPONENT blk_rom PORT MAP(clk, '0', address, pixel_in);
     u3 : COMPONENT scale_down_two PORT MAP(pixel_clk, '0', SDT_data_out, SDT_out_valid);
-    u4 : COMPONENT blk_ram PORT MAP(pixel_clk, '0', ram_addr, ram_we, ram_din, ram_dout);
+    u4 : COMPONENT blk_ram PORT MAP(pixel_clk, '0', wr_address, rd_address, ram_we, ram_din, ram_dout);
     
     pixel_in <= ram_dout;
     ram_din <= SDT_data_out;
-    ram_addr <= address;
+    --ram_addr <= rd_address;
     
 --    u2 : COMPONENT fifo GENERIC MAP(4, 5)
 --                        PORT MAP(clk, pixel_clk, fifo_rd, wr_data, wr_en, fifo_full, fifo_empty, pixel_in);

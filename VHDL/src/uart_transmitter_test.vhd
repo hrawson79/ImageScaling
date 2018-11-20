@@ -38,7 +38,7 @@ ARCHITECTURE uart_transmitter_top OF uart_transmitter_top IS
 --END COMPONENT;
 
 COMPONENT transmitter IS
-GENERIC(size : INTEGER := 4);
+GENERIC(size : INTEGER := 256);
 PORT(
     clk             : IN    STD_LOGIC;
     begin_tx        : IN    STD_LOGIC;
@@ -48,9 +48,20 @@ PORT(
     tx              : OUT   STD_LOGIC);
 END COMPONENT;
 
+COMPONENT blk_rom is
+  port (
+	-- input side
+	clk	: in std_logic;
+	rst	: in std_logic;
+	addr	: in INTEGER RANGE 0 TO 255; -- address bits
+	--output side
+	data_o	: out std_logic_vector(7 downto 0)
+	);
+END COMPONENT;
+
 ---------------------- Include all of the signals ----------------------
 SIGNAL s_tx_busy   : STD_LOGIC;
-SIGNAL s_address   : INTEGER RANGE 0 TO 3 := 0;
+SIGNAL s_address   : INTEGER RANGE 0 TO 255 := 0;
 SIGNAL s_load_byte : STD_LOGIC;
 SIGNAL s_dout      : STD_LOGIC_VECTOR(7 DOWNTO 0);
 SIGNAL s_din       : STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -65,11 +76,11 @@ BEGIN
     mem(1) <= "00000010";
     mem(2) <= "00000011";
     mem(3) <= "00000100";    
-    s_din <= mem(s_address);
+    --s_din <= mem(s_address);
     
-    u1: COMPONENT transmitter GENERIC MAP(size => 4)
+    u1: COMPONENT transmitter GENERIC MAP(size => 256)
                               PORT MAP(clk, btnC, s_din, s_address, led(15 DOWNTO 12), RsTx);
-    
+    u2: COMPONENT blk_rom PORT MAP(clk, '0', s_address, s_din);
 --    s_tx_busy <= NOT s_rdy;
 --    u_serial_out_ctrl : COMPONENT serial_out_ctrl GENERIC MAP(size => 4)
 --                                                    PORT MAP(clk, btnC, s_tx_busy, s_din, s_address, s_load_byte, s_dout, led(15 DOWNTO 12));
