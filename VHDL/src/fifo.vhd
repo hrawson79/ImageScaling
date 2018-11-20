@@ -24,23 +24,24 @@ ARCHITECTURE fifo OF fifo IS
 	SIGNAL buff : ram_type := (OTHERS => (OTHERS => '0'));
 	SIGNAL s_full : STD_LOGIC := '0';
 	SIGNAL s_empty : STD_LOGIC := '1';
-	SIGNAL s_rd_index : INTEGER RANGE 0 TO (WIDTH-1) := 0;
-	SIGNAL s_wr_index : INTEGER RANGE 0 TO (WIDTH-1) := 0;
-	SIGNAL s_cntr : INTEGER RANGE 0 TO (DEPTH-1);
+	SIGNAL s_rd_index : INTEGER RANGE 0 TO (DEPTH-1) := 0;
+	SIGNAL s_wr_index : INTEGER RANGE 0 TO (DEPTH-1) := 0;
+	SHARED VARIABLE s_cntr : INTEGER RANGE 0 TO (DEPTH-1);
 	SIGNAL s2_cntr : INTEGER RANGE 0 TO (DEPTH -1);
 BEGIN
     -- Write side
 	PROCESS(wr_clk)
 	BEGIN
 		IF (wr_clk'EVENT AND wr_clk = '1') THEN
-			IF (wr_en = '1') THEN	-- Write only
-				s_cntr <= s_cntr + 1;
+			IF (wr_en = '1' AND s_full = '0') THEN	-- Write only
+				s_cntr := s_cntr - s2_cntr + 1;
 			END IF;
 			
 			IF (wr_en = '1' AND s_full = '1') THEN
 				buff(s_wr_index) <= wr_data;
 				s_wr_index <= 0;
-			ELSE
+			ELSIF (wr_en = '1' AND s_full = '0') THEN
+			    buff(s_wr_index) <= wr_data;
 				s_wr_index <= s_wr_index + 1;
 			END IF;	
 		END IF;
@@ -50,13 +51,13 @@ BEGIN
 	PROCESS(rd_clk)
 	BEGIN
 	   IF (rd_clk'EVENT AND rd_clk = '1') THEN
-            IF (rd_en = '1') THEN
-                s2_cntr <= s2_cntr - 1;
+            IF (rd_en = '1' AND s_empty = '0') THEN
+                s2_cntr <= s_cntr - 1;
             END IF;
             
             IF (rd_en = '1' AND s_rd_index = DEPTH-1) THEN
-                            
-            ELSE
+                s_rd_index <= 0;
+            ELSIF (rd_en = '1' AND s_rd_index < DEPTH-1) THEN
                 s_rd_index <= s_rd_index + 1;
             END IF;
       END IF;
@@ -65,8 +66,8 @@ BEGIN
 	rd_data <= buff(s_rd_index);
 	
 	-- Flags
-	s_empty <= '1' WHEN (s_cntr-s2_cntr) = 0 ELSE '0';
-	s_full <= '1' WHEN (s_cntr-s2_cntr) = DEPTH-1 ELSE '0';
+	s_empty <= '1' WHEN (s_cntr) = 0 ELSE '0';
+	s_full <= '1' WHEN (s_cntr) = DEPTH-3 ELSE '0';
 	
 	fifo_empty <= s_empty;
 	fifo_full <= s_full;

@@ -25,7 +25,8 @@ PORT(
     Hsync, Vsync                          : BUFFER STD_LOGIC;
     R, G, B                               : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);   -- Only have 4 bits each on basys3 board
     nblanck, nsync                        : OUT STD_LOGIC;
-    fifo_rd                               : OUT STD_LOGIC);
+    fifo_rd                               : OUT STD_LOGIC;
+    address                               : OUT INTEGER RANGE 0 TO 307199);
 END vga;
 
 ARCHITECTURE vga OF vga IS
@@ -96,17 +97,20 @@ BEGIN
     ----------------------------- Image Generator -----------------------------
     PROCESS(clk)
         VARIABLE pixel_cntr : INTEGER RANGE 0 TO 307200;
-        VARIABLE row_index : INTEGER RANGE 1 TO 480 := 1;
-        VARIABLE col_index : INTEGER RANGE 1 TO 640 := 1;
+        VARIABLE row_index : INTEGER RANGE 0 TO 480 := 1;
+        VARIABLE col_index : INTEGER RANGE 0 TO 640 := 1;
+        VARIABLE addr_index : INTEGER RANGE 0 TO 59999;
     BEGIN
         IF (Vsync ='0') THEN
             pixel_cntr := 0;
             row_index := 1;
+            addr_index := 0;
             col_index := 1;
         ELSIF (pixel_clk'EVENT AND pixel_clk = '1') THEN
             IF (dena = '1') THEN
                 IF (row_index < rows and col_index < cols) THEN                    
                     fifo_rd <= '1';
+                    addr_index := addr_index + 1;
                     registered_pixel <= pixel_in;
                 ELSE
                     fifo_rd <= '0';
@@ -120,6 +124,7 @@ BEGIN
                 col_index := col_index + 1;
                 pixel_cntr := pixel_cntr + 1;
             END IF;
+            address <= addr_index;
             flag <= NOT flag;
         END IF;
         IF (pixel_cntr < 300) THEN
