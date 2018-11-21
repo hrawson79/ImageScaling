@@ -1,1 +1,2 @@
-Directory to store sorce vhdl files.
+Directory to store source vhdl files.
+Scale down by two module files. Reads image from ROM and saves scaled down by two image to RAM. Also outputs each pixel in the output image along with a out_valid signal. Also included are matlab files to generate a block ROM with the desired image and its size etc stored and a file to genrate block ram configured to store and output the input image scaled down by 2 in both x and y directions.
