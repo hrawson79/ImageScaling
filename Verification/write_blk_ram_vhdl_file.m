@@ -5,13 +5,12 @@
 clc
 clear
 close all
-%in = imread('peppers.png');
-I = imread('300by300.jpg');
+I = imread('peppers.png');
+%I = imread('300by300.jpg');
 if (length(size(I)) > 2)
     I = rgb2gray(I);
 end
-%I = imresize(I,[400 600]);
-%I = I(1:16,1:16); % Crop image for now
+I = imresize(I,[400 600]);
 imshow(I);
 
 num_elements = length(I(:));

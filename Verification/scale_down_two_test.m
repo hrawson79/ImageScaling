@@ -13,18 +13,18 @@
 clc
 clear
 close all
-%in = imread('peppers.png');
-I = imread('300by300.jpg');
+I = imread('peppers.png');
+%I = imread('300by300.jpg');
 if (length(size(I)) > 2)
     I = rgb2gray(I);
 end
 
-%I = imresize(I,[400 600]);
+I = imresize(I,[400 600]);
 
 scaled_down_reference = I(1:2:end,1:2:end);
 D = dlmread('output_img.txt'); % matlab stacks column by column
-%D = uint8(reshape(D,[300 200]))'; % but we need row by row
-D = uint8(reshape(D,[150 150]))'; % but we need row by row
+D = uint8(reshape(D,[300 200]))'; % but we need row by row
+
 figure, imshow(I)
 title('Input image')
 
