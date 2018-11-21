@@ -67,8 +67,10 @@ ARCHITECTURE vga_test OF vga_test IS
          port (
               -- input side
               clk, rst       : in  std_logic;
+              rd_addr        : in integer range 0 to 59999;
               -- output side
               data_out       : out std_logic_vector (7 downto 0);
+              ram_data_out   : out std_logic_vector (7 downto 0);
               out_valid      : out std_logic
               );
        END COMPONENT;
@@ -90,8 +92,8 @@ ARCHITECTURE vga_test OF vga_test IS
     
     SIGNAL pixel_clk : STD_LOGIC;
     SIGNAL nblanck, nsync : STD_LOGIC;
-    SIGNAL rd_address : INTEGER RANGE 0 TO 307199;
-    SIGNAL wr_address : INTEGER RANGE 0 TO 307199;
+    SIGNAL rd_address : integer range 0 to 59999;
+    --SIGNAL wr_address : INTEGER RANGE 0 TO 307199;
     SIGNAL pixel_in : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL fifo_rd : STD_LOGIC;
     -- TEST ARRAY
@@ -100,6 +102,7 @@ ARCHITECTURE vga_test OF vga_test IS
     SIGNAL fifo_full, fifo_empty : STD_LOGIC;
     SIGNAL addr : STD_LOGIC_VECTOR(17 DOWNTO 0);
     SIGNAL SDT_data_out : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    SIGNAL dummy : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL SDT_out_valid : STD_LOGIC;
     SIGNAL ram_addr : INTEGER;
     SIGNAL ram_we : STD_LOGIC := '1';
@@ -141,11 +144,11 @@ BEGIN
     
     u1 : COMPONENT vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), 200, 300, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, rd_address);
     --u2 : COMPONENT blk_rom PORT MAP(clk, '0', address, pixel_in);
-    u3 : COMPONENT scale_down_two PORT MAP(pixel_clk, '0', SDT_data_out, SDT_out_valid);
-    u4 : COMPONENT blk_ram PORT MAP(pixel_clk, '0', wr_address, rd_address, ram_we, ram_din, ram_dout);
+    u3 : COMPONENT scale_down_two PORT MAP(pixel_clk, '0', rd_address, dummy, SDT_data_out, SDT_out_valid);
+    --u4 : COMPONENT blk_ram PORT MAP(pixel_clk, '0', wr_address, rd_address, ram_we, ram_din, ram_dout);
     
-    pixel_in <= ram_dout;
-    ram_din <= SDT_data_out;
+    pixel_in <= SDT_data_out;
+    --ram_din <= SDT_data_out;
     --ram_addr <= rd_address;
     
 --    u2 : COMPONENT fifo GENERIC MAP(4, 5)

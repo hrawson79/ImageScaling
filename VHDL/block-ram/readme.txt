@@ -1,0 +1,1 @@
+VHDL simulation testbench for RAM inferred as block ram. Test bench reads 16x16 single channel uint8 image saved as comma separated text file(run/input_img.txt) and stores it copletely in RAM. Then reads the contents of RAM back in same order and saves output text file which should be exactly same as input file.
