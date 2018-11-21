@@ -2,6 +2,13 @@
 --Date         : 11/17/2018
 --Name of file : scale_down_two.vhd
 --Description  : Scale down image saved in block rom by two
+-- 		Implements the simple nearest neighbor algorithm to scale down image by 2
+-- 		in both directions.
+-- 		600x400 image is stored in ROM and this algorithm saves a 300x200 scaled
+-- 		down image in RAM. The scaled down version is obtained by simply dropping
+-- 		every other column and row of pixels.
+--		Also outputs each output pixel at the out port data_out along with valid signal
+--		out_valid for the testbench. The pixels are in row major form.
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -28,13 +35,15 @@ signal valid_p : std_logic;
 signal delay : integer;
 signal done  : std_logic;
 signal done_p  : std_logic;
+signal done_ram : std_logic;
 
 constant w : integer := 599; -- 0 indexed width of input
 constant h : integer := 399; -- 0 indexed height of input
+constant max_ram_addr : integer := 59999; -- max output image linear address
 signal r : integer := 0; -- row number for input rom
 signal c : integer := 0; -- col number for input rom
 signal addr    : INTEGER RANGE 0 TO 239999; -- Input rom linear address index
-signal t_addr  : integer range 0 to 59999;  -- Target RAM linear address index
+signal t_addr  : integer range 0 to max_ram_addr;  -- Target RAM linear address index
 signal we      : std_logic; -- Ram we enable
 
 component blk_rom
@@ -42,7 +51,7 @@ component blk_rom
         -- input side
         clk           : in std_logic;
         rst           : in std_logic;
-        addr  	      : in INTEGER RANGE 0 TO 239999; -- address bits
+        addr  	      : in INTEGER RANGE 0 TO max_ram_addr; -- address bits
         -- output side
         data_o        : out std_logic_vector(7 downto 0)
         );
@@ -53,8 +62,8 @@ component blk_ram
        -- input side
        clk      	: in  std_logic;
        rst      	: in  std_logic;
-       wr_address 	: in integer range 0 to 59999;
-       rd_address   	: in integer range 0 to 59999;
+       wr_address 	: in integer range 0 to max_ram_addr;
+       rd_address   	: in integer range 0 to max_ram_addr;
        we 		: in std_logic; 
        data_i 		: in std_logic_vector(7 downto 0);
        data_o 		: out std_logic_vector(7 downto 0)
@@ -89,6 +98,7 @@ RAM : blk_ram
            
 -- index to alternate row and col
 -- effectively scale down data by 2
+
 gen_index : process (clk)
 begin
   if (rising_edge(clk)) then
@@ -117,7 +127,7 @@ begin
 end process;
 
 -- generate address for ROM
---addr <= std_logic_vector(to_unsigned(r,4)) & std_logic_vector(to_unsigned(c,4));
+
 PROCESS(clk)
 BEGIN
     IF (clk'EVENT AND clk = '1') THEN
@@ -143,7 +153,7 @@ begin
         we <= '1';
       else
         delay <= 2;
-        if (t_addr < 59999) then
+        if (t_addr < max_ram_addr) then
 	  we <= '1';
         else
           we <= '0';
@@ -168,18 +178,34 @@ begin
       end if;
       if (delay = 2) then
         data_p <= data_o;
-        if (t_addr < 59999) then
+        if (t_addr < max_ram_addr) then
 	   t_addr <= t_addr + 1;
         else
            done_p <= '1';
         end if;
-        --done_p <= done;
       end if;
     end if;
   end if;
 end process;
 
-out_valid <= valid_p and (not done_p);
+-- Writing to ram takes one cycle longer
+p_ram_done : process (clk)
+begin
+  if (rising_edge(clk)) then
+    if (rst = '1') then
+      done_ram <= '0';
+    else
+      if (done_p = '1') then
+        done_ram <= '1';
+      else
+        done_ram <= '0';
+      end if;
+    end if;
+  end if;
+end process;
+
+--out_valid <= valid_p and (not done_p);
+out_valid <= valid_p and (not done_ram);
 data_out <= data_p;
 
 end arch;
