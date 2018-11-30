@@ -74,7 +74,18 @@ ARCHITECTURE vga_test OF vga_test IS
               out_valid      : out std_logic
               );
        END COMPONENT;
-    
+       
+       COMPONENT scale_up_two is
+         port (
+              -- input side
+              clk, rst       : in  std_logic;
+              rd_addr        : in integer range 0 to 239999; -- RAM address; TB or VGA uses to read the output stored in ram
+              -- output side
+              data_out       : out std_logic_vector (7 downto 0);
+              ram_data_out   : out std_logic_vector (7 downto 0);
+              out_valid      : out std_logic
+              );
+       END COMPONENT;
 --    COMPONENT fifo IS
 --        GENERIC(
 --            WIDTH : INTEGER := 8;  -- should be the width of a row of pixels for output image
@@ -92,7 +103,7 @@ ARCHITECTURE vga_test OF vga_test IS
     
     SIGNAL pixel_clk : STD_LOGIC;
     SIGNAL nblanck, nsync : STD_LOGIC;
-    SIGNAL rd_address : integer range 0 to 59999;
+    SIGNAL rd_address : integer range 0 to 239999;
     --SIGNAL wr_address : INTEGER RANGE 0 TO 307199;
     SIGNAL pixel_in : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL fifo_rd : STD_LOGIC;
@@ -142,9 +153,9 @@ BEGIN
     led(0) <= ram_we;
     --addr <= STD_LOGIC_VECTOR(TO_UNSIGNED(address, 18));
     
-    u1 : COMPONENT vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), 200, 300, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, rd_address);
+    u1 : COMPONENT vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), 400, 600, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, rd_address);
     --u2 : COMPONENT blk_rom PORT MAP(clk, '0', address, pixel_in);
-    u3 : COMPONENT scale_down_two PORT MAP(pixel_clk, '0', rd_address, dummy, SDT_data_out, SDT_out_valid);
+    u3 : COMPONENT scale_up_two PORT MAP(pixel_clk, '0', rd_address, dummy, SDT_data_out, SDT_out_valid);
     --u4 : COMPONENT blk_ram PORT MAP(pixel_clk, '0', wr_address, rd_address, ram_we, ram_din, ram_dout);
     
     pixel_in <= SDT_data_out;

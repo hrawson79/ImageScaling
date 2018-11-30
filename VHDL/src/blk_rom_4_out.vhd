@@ -7,18 +7,26 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity blk_rom is
+entity blk_rom_4 is
   port (
 	-- input side
 	clk	: in std_logic;
 	rst	: in std_logic;
 	addr	: in integer range 0 to 59999; -- address bits
 	--output side
-	data_o	: out std_logic_vector(7 downto 0)
+	data_o_1	: out std_logic_vector(7 downto 0);
+	data_o_2    : out std_logic_vector(7 downto 0);
+	data_o_3    : out std_logic_vector(7 downto 0);
+	data_o_4    : out std_logic_vector(7 downto 0)
 	);
-end blk_rom;
+end blk_rom_4;
 
-architecture arch of blk_rom is
+architecture arch of blk_rom_4 is
+
+signal addr_1 : integer range 0 to 59999;
+signal addr_2 : integer range 0 to 59999;
+signal addr_3 : integer range 0 to 59999;
+signal addr_4 : integer range 0 to 59999;
 
 type rom_t is array(0 to 59999) of std_logic_vector(7 downto 0);
 
@@ -60027,13 +60035,21 @@ signal rom : rom_t := (
 
 begin
 
+addr_1 <= addr;
+addr_2 <= addr + 1;
+addr_3 <= addr + 299;
+addr_4 <= addr + 300;
+
 process(clk)
 begin
   if(rising_edge(clk)) then
     if (rst = '1') then
-      data_o <= "00000000";
+      data_o_1 <= "00000000";
     else
-      data_o <= rom(addr);
+      data_o_1 <= rom(addr);
+      data_o_2 <= rom(addr_2);
+      data_o_3 <= rom(addr_3);
+      data_o_4 <= rom(addr_4);
     end if;
   end if;
 end process;

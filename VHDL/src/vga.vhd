@@ -26,7 +26,7 @@ PORT(
     R, G, B                               : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);   -- Only have 4 bits each on basys3 board
     nblanck, nsync                        : OUT STD_LOGIC;
     fifo_rd                               : OUT STD_LOGIC;
-    address                               : OUT INTEGER RANGE 0 TO 59999);
+    address                               : OUT INTEGER RANGE 0 TO 239999);
 END vga;
 
 ARCHITECTURE vga OF vga IS
@@ -99,7 +99,7 @@ BEGIN
         VARIABLE pixel_cntr : INTEGER RANGE 0 TO 307200;
         VARIABLE row_index : INTEGER RANGE 0 TO 480 := 1;
         VARIABLE col_index : INTEGER RANGE 0 TO 640 := 1;
-        VARIABLE addr_index : INTEGER RANGE 0 TO 59999;
+        VARIABLE addr_index : INTEGER RANGE 0 TO 239999;
     BEGIN
         IF (Vsync ='0') THEN
             pixel_cntr := 0;
