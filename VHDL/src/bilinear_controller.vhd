@@ -6,8 +6,8 @@ ENTITY bilinear_controller IS
           begin_trig    : IN    STD_LOGIC;
           rd_address    : IN    INTEGER RANGE 0 TO 59999;
           size_ctrl     : IN    STD_LOGIC;
-          w             : BUFFER INTEGER RANGE 0 TO 599;
-          h             : BUFFER INTEGER RANGE 0 TO 399;
+          w             : BUFFER INTEGER RANGE 0 TO 299;
+          h             : BUFFER INTEGER RANGE 0 TO 199;
           px_out        : OUT   STD_LOGIC_VECTOR(7 DOWNTO 0));
 END bilinear_controller;
     
@@ -16,8 +16,8 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
     --SIGNAL h : INTEGER RANGE 0 TO 399;
     SIGNAL scale : STD_LOGIC_VECTOR(5 DOWNTO 0);
     
-    SIGNAL x : INTEGER RANGE 0 TO 599;  -- Used to traverse rows and cols
-    SIGNAL y : INTEGER RANGE 0 TO 399;
+    SIGNAL x : INTEGER RANGE 0 TO 299;  -- Used to traverse rows and cols
+    SIGNAL y : INTEGER RANGE 0 TO 199;
     
     -- fsm structure
     TYPE controller_fsm_type IS (idle, transform, done);
@@ -28,26 +28,26 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
     COMPONENT bilinear_interpolation IS
         PORT(clk, rst   : IN    STD_LOGIC;
              a,b,c,d    : IN    STD_LOGIC_VECTOR(7 DOWNTO 0);
-             x_h        : IN    INTEGER RANGE 0 TO 599;
-             y_h        : IN    INTEGER RANGE 0 TO 399;
+             x_h        : IN    INTEGER RANGE 0 TO 299;
+             y_h        : IN    INTEGER RANGE 0 TO 199;
              scale      : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);
              in_valid   : IN    STD_LOGIC;
-             rows       : IN    INTEGER RANGE 0 TO 599;
+             rows       : IN    INTEGER RANGE 0 TO 299;
              address    : OUT   INTEGER RANGE 0 TO 59999;
              we         : OUT   STD_LOGIC;
-             x_p        : OUT   INTEGER RANGE 0 TO 299;
-             y_p        : OUT   INTEGER RANGE 0 TO 199;
+             x_p        : OUT   INTEGER RANGE 0 TO 149;
+             y_p        : OUT   INTEGER RANGE 0 TO 99;
              pixel      : OUT   STD_LOGIC_VECTOR(7 DOWNTO 0));
      END COMPONENT;
      SIGNAL in_valid : STD_LOGIC;
      SIGNAL a,b,c,d    : STD_LOGIC_VECTOR(7 DOWNTO 0);
-     SIGNAL x_h        : INTEGER RANGE 0 TO 599;
-     SIGNAL y_h        : INTEGER RANGE 0 TO 399;
-     SIGNAL rows       : INTEGER RANGE 0 TO 599;
+     SIGNAL x_h        : INTEGER RANGE 0 TO 299;
+     SIGNAL y_h        : INTEGER RANGE 0 TO 199;
+     SIGNAL rows       : INTEGER RANGE 0 TO 299;
      SIGNAL address    : INTEGER RANGE 0 TO 59999;
      SIGNAL we         : STD_LOGIC;
-     SIGNAL x_p        : INTEGER RANGE 0 TO 299;
-     SIGNAL y_p        : INTEGER RANGE 0 TO 199;
+     SIGNAL x_p        : INTEGER RANGE 0 TO 149;
+     SIGNAL y_p        : INTEGER RANGE 0 TO 99;
      SIGNAL pixel      : STD_LOGIC_VECTOR(7 DOWNTO 0);
      
      -- BLKROM w/ 4 out

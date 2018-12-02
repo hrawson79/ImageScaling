@@ -8,15 +8,15 @@ use ieee_proposed.fixed_pkg.all;
 ENTITY bilinear_interpolation IS
     PORT(clk, rst   : IN    STD_LOGIC;
          a,b,c,d    : IN    STD_LOGIC_VECTOR(7 DOWNTO 0);
-         x_h        : IN    INTEGER RANGE 0 TO 599;
-         y_h        : IN    INTEGER RANGE 0 TO 399;
+         x_h        : IN    INTEGER RANGE 0 TO 299;
+         y_h        : IN    INTEGER RANGE 0 TO 199;
          scale      : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);
          in_valid   : IN    STD_LOGIC;
-         rows       : IN    INTEGER RANGE 0 TO 599;
+         rows       : IN    INTEGER RANGE 0 TO 299;
          address    : OUT   INTEGER RANGE 0 TO 59999;
          we         : OUT   STD_LOGIC;
-         x_p        : OUT   INTEGER RANGE 0 TO 299;
-         y_p        : OUT   INTEGER RANGE 0 TO 199;
+         x_p        : OUT   INTEGER RANGE 0 TO 149;
+         y_p        : OUT   INTEGER RANGE 0 TO 99;
          pixel      : OUT   STD_LOGIC_VECTOR(7 DOWNTO 0));
 END bilinear_interpolation;
 
