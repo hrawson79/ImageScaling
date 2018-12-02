@@ -19,7 +19,7 @@ ARCHITECTURE tb_bilinear_controller OF tb_bilinear_controller IS
   
   SIGNAL begin_trig : STD_LOGIC := '0';
   SIGNAL rd_address : INTEGER RANGE 0 TO 239999 := 0;
-  SIGNAL size_ctrl : STD_LOGIC := '0';
+  SIGNAL size_ctrl : STD_LOGIC := '1';
   SIGNAL stage : INTEGER RANGE 1 TO 10 := 1;
   SIGNAL clk : STD_LOGIC := '0';
 BEGIN

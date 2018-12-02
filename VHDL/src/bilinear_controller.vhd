@@ -4,7 +4,7 @@ USE ieee.std_logic_1164.all;
 ENTITY bilinear_controller IS
     PORT (clk, rst      : IN    STD_LOGIC;
           begin_trig    : IN    STD_LOGIC;
-          rd_address    : IN    INTEGER RANGE 0 TO 239999;
+          rd_address    : IN    INTEGER RANGE 0 TO 59999;
           size_ctrl     : IN    STD_LOGIC;
           w             : BUFFER INTEGER RANGE 0 TO 599;
           h             : BUFFER INTEGER RANGE 0 TO 399;
@@ -33,7 +33,7 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
              scale      : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);
              in_valid   : IN    STD_LOGIC;
              rows       : IN    INTEGER RANGE 0 TO 599;
-             address    : OUT   INTEGER RANGE 0 TO 239999;
+             address    : OUT   INTEGER RANGE 0 TO 59999;
              we         : OUT   STD_LOGIC;
              x_p        : OUT   INTEGER RANGE 0 TO 299;
              y_p        : OUT   INTEGER RANGE 0 TO 199;
@@ -44,7 +44,7 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
      SIGNAL x_h        : INTEGER RANGE 0 TO 599;
      SIGNAL y_h        : INTEGER RANGE 0 TO 399;
      SIGNAL rows       : INTEGER RANGE 0 TO 599;
-     SIGNAL address    : INTEGER RANGE 0 TO 239999;
+     SIGNAL address    : INTEGER RANGE 0 TO 59999;
      SIGNAL we         : STD_LOGIC;
      SIGNAL x_p        : INTEGER RANGE 0 TO 299;
      SIGNAL y_p        : INTEGER RANGE 0 TO 199;
@@ -56,7 +56,7 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
          -- input side
          clk    : in std_logic;
          rst    : in std_logic;
-         addr    : in integer range 0 to 59999; -- address bits
+         addr    : in integer range 0 to 14999; -- address bits
          --output side
          data_o_1    : out std_logic_vector(7 downto 0);
          data_o_2    : out std_logic_vector(7 downto 0);
@@ -64,7 +64,7 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
          data_o_4    : out std_logic_vector(7 downto 0)
          );
      END COMPONENT;
-     SIGNAL rom_addr : INTEGER RANGE 0 TO 59999;
+     SIGNAL rom_addr : INTEGER RANGE 0 TO 14999;
      
      -- BLKRAM
      COMPONENT blk_ram is
@@ -72,15 +72,15 @@ ARCHITECTURE bilinear_controller OF bilinear_controller IS
          -- input side
          clk    : in std_logic;
          rst    : in std_logic;
-         wr_address    : in integer range 0 to 239999;
-         rd_address    : in integer range 0 to 239999;
+         wr_address    : in integer range 0 to 59999;
+         rd_address    : in integer range 0 to 59999;
          we    : in std_logic;
          --output side
          data_i    : in std_logic_vector(7 downto 0);
          data_o    : out std_logic_vector(7 downto 0)
          );
      END COMPONENT;
-     SIGNAL ram_rd_addr : INTEGER RANGE 0 TO 239999;
+     SIGNAL ram_rd_addr : INTEGER RANGE 0 TO 59999;
      SIGNAL data_i : std_logic_vector(7 downto 0);
      SIGNAL data_o : std_logic_vector(7 downto 0);
 BEGIN    
@@ -90,15 +90,19 @@ BEGIN
     ram : blk_ram PORT MAP (clk, rst, address, rd_address, we, data_i, px_out);
     
     --rom address from x_p, y_p
-    rom_addr <= x_p + (y_p * rows);
+    rom_addr <= x_p + (y_p * w);
     
     --ram data
     data_i <= pixel;
     
-    w <= 149 WHEN size_ctrl = '0' ELSE
-         599;
-    h <= 99 WHEN size_ctrl = '0' ELSE
-         399;
+--    w <= 149 WHEN size_ctrl = '0' ELSE
+--         599;
+--    h <= 99 WHEN size_ctrl = '0' ELSE
+--         399;
+    w <= 74 WHEN size_ctrl = '0' ELSE
+     299;
+    h <= 49 WHEN size_ctrl = '0' ELSE
+     199;
     scale <= "001000" WHEN size_ctrl = '1' ELSE
              "100000";
     
