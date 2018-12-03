@@ -12,8 +12,8 @@ entity blk_ram is
 	-- input side
 	clk	: in std_logic;
 	rst	: in std_logic;
-	wr_address	: in integer range 0 to 59999;
-	rd_address	: in integer range 0 to 59999;
+	wr_address	: in integer range 0 to 134999;
+	rd_address	: in integer range 0 to 134999;
 	we	: in std_logic;
 	--output side
 	data_i	: in std_logic_vector(7 downto 0);
@@ -23,7 +23,7 @@ end blk_ram;
 
 architecture arch of blk_ram is
 
-type ram_t is array(0 to 59999) of std_logic_vector(7 downto 0);
+type ram_t is array(0 to 134999) of std_logic_vector(7 downto 0);
 
 signal ram : ram_t := (others => "10100000");
 begin

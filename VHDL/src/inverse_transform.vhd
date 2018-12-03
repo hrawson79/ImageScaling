@@ -8,12 +8,12 @@ use ieee_proposed.fixed_pkg.all;
 ENTITY bilinear_interpolation IS
     PORT(clk, rst   : IN    STD_LOGIC;
          a,b,c,d    : IN    STD_LOGIC_VECTOR(7 DOWNTO 0);
-         x_h        : IN    INTEGER RANGE 0 TO 299;
-         y_h        : IN    INTEGER RANGE 0 TO 199;
+         x_h        : IN    INTEGER RANGE 0 TO 449;
+         y_h        : IN    INTEGER RANGE 0 TO 299;
          scale      : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);
          in_valid   : IN    STD_LOGIC;
-         rows       : IN    INTEGER RANGE 0 TO 299;
-         address    : OUT   INTEGER RANGE 0 TO 59999;
+         rows       : IN    INTEGER RANGE 0 TO 449;
+         address    : OUT   INTEGER RANGE 0 TO 134999;
          we         : OUT   STD_LOGIC;
          x_p        : OUT   INTEGER RANGE 0 TO 149;
          y_p        : OUT   INTEGER RANGE 0 TO 99;
@@ -29,12 +29,12 @@ ARCHITECTURE bilinear_interpolation OF bilinear_interpolation IS
     SIGNAL scale_fixed : UFIXED(1 DOWNTO -4); --fixed scale factor
     SIGNAL x_h_fixed : UFIXED(10 DOWNTO 0);
     SIGNAL y_h_fixed : UFIXED(10 DOWNTO 0);
-    SIGNAL addr_s1 : INTEGER RANGE 0 TO 59999;
+    SIGNAL addr_s1 : INTEGER RANGE 0 TO 134999;
     
     --S2 signals
     SIGNAL x_fixed : UFIXED(12 DOWNTO -4); --fixed product of scale_fixed*x_h_fixed
     SIGNAL y_fixed : UFIXED(12 DOWNTO -4);
-    SIGNAL addr_s2 : INTEGER RANGE 0 TO 59999;
+    SIGNAL addr_s2 : INTEGER RANGE 0 TO 134999;
     SIGNAL x_o : UFIXED(8 DOWNTO 0);
     SIGNAL y_o : UFIXED(9 DOWNTO 0);
     
@@ -43,7 +43,7 @@ ARCHITECTURE bilinear_interpolation OF bilinear_interpolation IS
     SIGNAL delta_y : UFIXED(0 DOWNTO -4);
     SIGNAL one_minus_delta_x : UFIXED(1 DOWNTO -4);
     SIGNAL one_minus_delta_y : UFIXED(1 DOWNTO -4);
-    SIGNAL addr_s3 : INTEGER RANGE 0 TO 59999;
+    SIGNAL addr_s3 : INTEGER RANGE 0 TO 134999;
     
     --S4 signals
     SIGNAL a_fixed : UFIXED(7 DOWNTO 0);
@@ -58,13 +58,13 @@ ARCHITECTURE bilinear_interpolation OF bilinear_interpolation IS
     SIGNAL b_hat : UFIXED(10 DOWNTO -4);
     SIGNAL delta_y_s4 : UFIXED(0 DOWNTO -4);
     SIGNAL one_minus_delta_y_s4 : UFIXED(1 DOWNTO -4);
-    SIGNAL addr_s4 : INTEGER RANGE 0 TO 59999;
+    SIGNAL addr_s4 : INTEGER RANGE 0 TO 134999;
     
     --S5 signals
     SIGNAL a_prime : UFIXED(12 DOWNTO -8);
     SIGNAL b_prime : UFIXED(11 DOWNTO -8);
     SIGNAL pixel_s5 : UFIXED(13 DOWNTO -8);
-    SIGNAL addr_s5 : INTEGER RANGE 0 TO 59999;
+    SIGNAL addr_s5 : INTEGER RANGE 0 TO 134999;
     
 BEGIN
     -- combinational logic for stage ready signals
