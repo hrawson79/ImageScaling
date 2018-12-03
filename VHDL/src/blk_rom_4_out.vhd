@@ -15037,8 +15037,8 @@ begin
 
 addr_1 <= addr;
 addr_2 <= addr + 1;
-addr_3 <= addr + 299;
-addr_4 <= addr + 300;
+addr_3 <= addr + 150;
+addr_4 <= addr + 151;
 
 process(clk)
 begin

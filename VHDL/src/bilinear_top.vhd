@@ -60,8 +60,8 @@ ARCHITECTURE bilinear_top OF bilinear_top IS
     SIGNAL pixel_in : STD_LOGIC_VECTOR(7 DOWNTO 0);
     SIGNAL fifo_rd : STD_LOGIC;
 BEGIN
-    h_p_1 <= height+1;
-    w_p_1 <= width+1;
+    h_p_1 <= height;
+    w_p_1 <= width;
     u1 : vga PORT MAP(clk, sw(0), sw(1), sw(2), pixel_in(7 DOWNTO 4), h_p_1, w_p_1, pixel_clk, Hsync, Vsync, vgaRed, vgaGreen, vgaBlue, nblanck, nsync, fifo_rd, rd_address);
     u2 : bilinear_controller PORT MAP (pixel_clk, '0', btnC, rd_address, sw(0), width, height, pixel_in);
 

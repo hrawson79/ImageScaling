@@ -90,7 +90,7 @@ BEGIN
     ram : blk_ram PORT MAP (clk, rst, address, rd_address, we, data_i, px_out);
     
     --rom address from x_p, y_p
-    rom_addr <= x_p + (y_p * w);
+    rom_addr <= x_p + (y_p * 150);
     
     --ram data
     data_i <= pixel;
