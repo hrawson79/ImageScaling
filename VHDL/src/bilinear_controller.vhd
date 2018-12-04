@@ -1,3 +1,10 @@
+--Engineer     : Hunter R
+--Date         : 11/28/2018
+--Name of file : bilinear_controller.vhd
+--Description  : This module is a controller for the bilinear algorithm. It controls the size
+--               of the destination image, controls the flow of data from ROM to RAM, and
+--               controls traversing the destinatination image.
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 

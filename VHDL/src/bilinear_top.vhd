@@ -1,5 +1,8 @@
--- Used to test VGA 
--- Author: Hunter R
+--Engineer     : Hunter R
+--Date         : 11/28/2018
+--Name of file : bilinear_top.vhd
+--Description  : This module is the top module for the bilear algorithm.
+--               It conectes to the vga for the output.
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
